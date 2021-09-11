@@ -1,5 +1,6 @@
 package io.github.maylcf.bootcamp
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -12,13 +13,13 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ContactClickListener {
 
     private val contactList: RecyclerView by lazy {
         findViewById(R.id.contact_list)
     }
 
-    private val adapter = ContactAdapter()
+    private val adapter = ContactAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,5 +72,10 @@ class MainActivity : AppCompatActivity() {
                         Contact("John", "123-456-7890", "")
                 )
         )
+    }
+
+    override fun onContactClick(contact: Contact) {
+        val intent = Intent(this, ContactDetailActivity::class.java)
+        startActivity(intent)
     }
 }
