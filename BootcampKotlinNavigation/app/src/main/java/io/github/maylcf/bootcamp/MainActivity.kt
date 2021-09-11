@@ -76,6 +76,7 @@ class MainActivity : AppCompatActivity(), ContactClickListener {
 
     override fun onContactClick(contact: Contact) {
         val intent = Intent(this, ContactDetailActivity::class.java)
+        intent.putExtra(ContactDetailActivity.CONTACT_EXTRA, contact)
         startActivity(intent)
     }
 }
