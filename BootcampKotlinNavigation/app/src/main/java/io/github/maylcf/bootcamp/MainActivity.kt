@@ -30,16 +30,6 @@ class MainActivity : AppCompatActivity(), ContactClickListener {
         updateList()
     }
 
-    private fun initDrawer() {
-        val drawerLayout = findViewById<View>(R.id.drawer_layout) as DrawerLayout
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-
-        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer)
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.menu, menu)
@@ -60,6 +50,28 @@ class MainActivity : AppCompatActivity(), ContactClickListener {
         }
     }
 
+    override fun onContactClick(contact: Contact) {
+        val intent = Intent(this, ContactDetailActivity::class.java)
+        intent.putExtra(ContactDetailActivity.CONTACT_EXTRA, contact)
+        startActivity(intent)
+    }
+
+    private fun initDrawer() {
+        val drawerLayout = findViewById<View>(R.id.drawer_layout) as DrawerLayout
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        val toggle = ActionBarDrawerToggle(
+            this,
+            drawerLayout,
+            toolbar,
+            R.string.open_drawer,
+            R.string.close_drawer
+        )
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+    }
+
     private fun bindView() {
         contactList.adapter = adapter
         contactList.layoutManager = LinearLayoutManager(this)
@@ -67,16 +79,10 @@ class MainActivity : AppCompatActivity(), ContactClickListener {
 
     private fun updateList() {
         adapter.updateList(
-                arrayListOf(
-                        Contact("Mary", "111-222-3333", ""),
-                        Contact("John", "123-456-7890", "")
-                )
+            arrayListOf(
+                Contact("Mary", "111-222-3333", ""),
+                Contact("John", "123-456-7890", "")
+            )
         )
-    }
-
-    override fun onContactClick(contact: Contact) {
-        val intent = Intent(this, ContactDetailActivity::class.java)
-        intent.putExtra(ContactDetailActivity.CONTACT_EXTRA, contact)
-        startActivity(intent)
     }
 }
