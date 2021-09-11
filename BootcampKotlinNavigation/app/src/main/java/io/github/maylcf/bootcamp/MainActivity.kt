@@ -1,6 +1,8 @@
 package io.github.maylcf.bootcamp
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -12,6 +14,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 class MainActivity : AppCompatActivity(), ContactClickListener {
 
@@ -27,7 +31,7 @@ class MainActivity : AppCompatActivity(), ContactClickListener {
 
         initDrawer()
         bindView()
-        updateList()
+        fetchContactList()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -75,14 +79,29 @@ class MainActivity : AppCompatActivity(), ContactClickListener {
     private fun bindView() {
         contactList.adapter = adapter
         contactList.layoutManager = LinearLayoutManager(this)
+        updateList()
+    }
+
+    private fun getContactList(): List<Contact> {
+        val list = getSharedPreferencesInstance().getString("contacts", "[]")
+        val turnsType = object : TypeToken<List<Contact>>() {}.type
+        return Gson().fromJson(list, turnsType)
     }
 
     private fun updateList() {
-        adapter.updateList(
-            arrayListOf(
-                Contact("Mary", "111-222-3333", ""),
-                Contact("John", "123-456-7890", "")
-            )
+        adapter.updateList(getContactList())
+    }
+
+    private fun getSharedPreferencesInstance(): SharedPreferences {
+        return getSharedPreferences("io.github.maylc.bootcamp.preferences", Context.MODE_PRIVATE)
+    }
+
+    private fun fetchContactList() {
+        val list = arrayListOf(
+            Contact("Mary", "111-222-3333", ""),
+            Contact("John", "123-456-7890", "")
         )
+
+        getSharedPreferencesInstance().edit().putString("contacts", Gson().toJson(list)).apply()
     }
 }
